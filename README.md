@@ -83,21 +83,22 @@ Minutes 56-60: Live Collaboration & Technical Discussion
 
 ### Installation
 ```bash
-git clone https://github.com/dakshinsiva/data-exploration-mcp.git
+git clone https://github.com/dakshinrajsiva/data-exploration-mcp.git
 cd data-exploration-mcp
 pip install -e .
 ```
 
-### Claude Desktop Setup
-Add to your Claude Desktop configuration:
+### Setup for Claude Desktop & Cursor IDE
 
+#### **Claude Desktop** (Quick Setup)
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
     "data-exploration-mcp": {
       "command": "python",
       "args": ["-m", "src.main"],
-      "cwd": "/path/to/data-exploration-mcp",
+      "cwd": "/full/path/to/data-exploration-mcp",
       "env": {
         "INTERVIEW_MODE": "true",
         "MEMORY_OPTIMIZATION": "true"
@@ -107,6 +108,26 @@ Add to your Claude Desktop configuration:
 }
 ```
 
+#### **Cursor IDE** (Quick Setup)
+Add to `~/.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "data-exploration-mcp": {
+      "command": "python", 
+      "args": ["-m", "src.main"],
+      "cwd": "/full/path/to/data-exploration-mcp",
+      "env": {
+        "INTERVIEW_MODE": "true",
+        "MEMORY_OPTIMIZATION": "true"
+      }
+    }
+  }
+}
+```
+
+📖 **For detailed setup instructions, troubleshooting, and advanced configuration, see [MCP_SETUP_GUIDE.md](MCP_SETUP_GUIDE.md)**
+
 ### Instant Demo
 ```bash
 # Test the system
@@ -114,6 +135,9 @@ python test_mcp_connection.py
 
 # Quick analysis
 python -m src.main analyze test_dataset.csv
+
+# Memory optimization test
+python -m src.main test-optimization test_dataset.csv
 ```
 
 ### Usage During Interview
