@@ -3,13 +3,13 @@
     "data-exploration-mcp": {
       "command": "python",
       "args": ["-m", "src.main"],
-      "cwd": "/Users/dakshinsiva/Data_MCP/veeam-interview-analyzer",
+      "cwd": "/Users/dakshinsiva/Data_MCP",
       "env": {
         "INTERVIEW_MODE": "true",
         "MEMORY_OPTIMIZATION": "true",
         "VERBOSE_EXPLANATIONS": "true",
         "PROFESSIONAL_OUTPUT": "true",
-        "PYTHONPATH": "/Users/dakshinsiva/Data_MCP/veeam-interview-analyzer"
+        "PYTHONPATH": "/Users/dakshinsiva/Data_MCP"
       }
     }
   }

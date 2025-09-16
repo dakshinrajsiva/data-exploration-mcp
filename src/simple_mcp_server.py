@@ -2121,7 +2121,7 @@ async def handle_optimized_analysis_workflow(args: Dict[str, Any]) -> Dict[str, 
         exploration_results["dataset_profile"] = {
             "shape": optimized_data.shape,
             "memory_usage_mb": round(optimized_memory, 2),
-            "data_types": {str(k): int(v) for k, v in optimized_data.dtypes.value_counts().items()},
+            "data_types": {str(k): int(v) for k, v in optimized_data.dtypes.astype(str).value_counts().items()},
             "optimization_status": "Memory and vectorization optimized"
         }
         
@@ -2763,7 +2763,7 @@ async def perform_data_discovery(data, user_response, focus_area):
         analysis[col] = col_info
     
     findings.append("🔍 Completed detailed column profiling")
-    findings.append(f"📊 Data types: {dict(data.dtypes.value_counts().apply(str))}")
+    findings.append(f"📊 Data types: {dict(data.dtypes.astype(str).value_counts())}")
     
     # Data quality assessment
     quality_issues = []

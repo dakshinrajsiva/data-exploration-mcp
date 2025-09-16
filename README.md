@@ -22,8 +22,8 @@ cd data-exploration-mcp
 
 2. **Install dependencies**:
    ```bash
-pip install -e .
-```
+   pip install -e .
+   ```
 
 3. **Test the installation**:
    ```bash
@@ -118,6 +118,60 @@ pip install -e .
    realpath /path/to/data-exploration-mcp
    ```
 
+4. **"Server disconnected" error**:
+   
+   **Common causes and solutions**:
+   
+   a) **Python path issue**:
+   ```bash
+   # Find your Python path
+   which python
+   
+   # Update claude_desktop_config.json with absolute Python path
+   # Change from: "command": "python"
+   # To: "command": "/Users/yourname/anaconda3/bin/python"
+   ```
+   
+   b) **Working directory issue** (Most common):
+   
+   According to the [MCP debugging documentation](https://modelcontextprotocol.io/legacy/tools/debugging), Claude Desktop's working directory may be undefined (like `/` on macOS). **Always use absolute paths for server files.**
+   
+   **Check Claude Desktop logs**:
+   ```bash
+   tail -n 20 ~/Library/Logs/Claude/mcp-server-data-exploration-mcp.log
+   ```
+   
+   If you see errors like `can't open file '//src/simple_mcp_server.py'`, use absolute paths:
+   
+   **❌ Incorrect (relative paths)**:
+   ```json
+   {
+     "mcpServers": {
+       "data-exploration-mcp": {
+         "command": "/Users/yourname/anaconda3/bin/python",
+         "args": ["src/simple_mcp_server.py"],
+         "cwd": "/path/to/Data_MCP"
+       }
+     }
+   }
+   ```
+   
+   **✅ Correct (absolute paths)**:
+   ```json
+   {
+     "mcpServers": {
+       "data-exploration-mcp": {
+         "command": "/Users/yourname/anaconda3/bin/python",
+         "args": ["/path/to/Data_MCP/src/simple_mcp_server.py"],
+         "cwd": "/path/to/Data_MCP",
+         "env": {
+           "PYTHONPATH": "/path/to/Data_MCP"
+         }
+       }
+     }
+   }
+   ```
+
 **Verification Steps:**
 
 1. **Test MCP connection**:
@@ -125,9 +179,25 @@ pip install -e .
 python test_mcp_connection.py
    ```
 
-2. **Check server logs** in Claude Desktop console
+2. **Check server logs** in Claude Desktop console:
+```bash
+# Follow logs in real-time (per MCP documentation)
+tail -n 20 -F ~/Library/Logs/Claude/mcp*.log
+```
 
 3. **Verify tools are available**: Look for 28 tools in the MCP interface
+
+**Advanced Debugging** (following [MCP debugging guide](https://modelcontextprotocol.io/legacy/tools/debugging)):
+
+1. **Enable Chrome DevTools in Claude Desktop**:
+```bash
+echo '{"allowDevTools": true}' > ~/Library/Application\ Support/Claude/developer_settings.json
+```
+Then use `Command-Option-Shift-i` to open DevTools
+
+2. **Monitor MCP protocol messages** in DevTools Network panel
+
+3. **Check server initialization** in Console panel
 
 ### **⚡ Quick Test**
 
@@ -999,6 +1069,7 @@ insights = pipeline_result["insights"]
 - **Memory errors**: Use `optimize_memory` tool first for large datasets
 - **Slow performance**: Enable vectorization with `optimized_analysis_workflow`
 - **Missing dependencies**: Run `pip install -e .` to install all requirements
+- **"Server disconnected" error**: Use absolute Python path in Claude Desktop config (see troubleshooting section)
 - **Configuration issues**: Check the troubleshooting section above
 - **Import errors**: Verify Python path and virtual environment setup
 
