@@ -1,0 +1,130 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Data files (keep sample but ignore large datasets)
+*.csv
+!test_dataset.csv
+!sample_*.csv
+*.parquet
+*.json
+!pyproject.toml
+!cursor_mcp_config.json
+!package.json
+!config.json
+
+# Export directories
+analysis_exports/
+executive_reports/
+optimized_exports/
+vectorized_exports/
+OUTPUTS/
+
+# Misc and development files
+Misc/
+*.backup
+*.bak
+*.old
+
+# Documentation that's not needed for core functionality
+EXECUTION_SUMMARY.md
+FINAL_COMPLETION_SUMMARY.md
+CLAUDE_SETUP_INSTRUCTIONS.md
+*_SUMMARY.md
+*_GUIDE.md
+*_SHOWCASE.md
+!README.md
+!INSTALLATION.md
+!CONTRIBUTING.md
+!LICENSE
+
+# Test outputs and temporary analysis files
+test_*.json
+*_results.json
+*_analysis_*.md
+*_demo_*.py
+*_test_*.py
+demo_*.py
+*_backup.*
+*_broken.*
+*_fixed.*
+*.sh
+!setup.sh
