@@ -21,9 +21,9 @@ cd data-exploration-mcp
    ```
 
 2. **Install dependencies**:
-   ```bash
+```bash
 pip install -e
-```
+   ```
 
 3. **Test the installation**:
    ```bash
