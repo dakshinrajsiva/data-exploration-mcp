@@ -6,7 +6,7 @@
 
 ## 🚀 **30-Second Elevator Pitch**
 
-*"I built a production-grade Data Exploration MCP server that extends Claude Desktop with 28 specialized analytics tools. The system achieves 337x performance improvement and 67% memory reduction through intelligent optimization algorithms. It processes sensitive data 100% locally while providing LLM-augmented insights, delivering $13,824+ in annual cost savings with sub-50ms response times."*
+*"I built a production-grade Data Exploration MCP server that extends Claude Desktop with 28 specialized analytics tools. The system achieves 337x performance improvement and 67% memory reduction through intelligent optimization algorithms. It processes sensitive data 100% locally while providing LLM-augmented insights  with sub-50ms response times."*
 
 ---
 
