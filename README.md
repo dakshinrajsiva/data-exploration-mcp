@@ -297,9 +297,9 @@ print(f'Speed improvement: {improvement:.0f}x faster')
 | Format | Max Size Tested | Memory Optimization | Load Time (1GB) | Special Features |
 |--------|----------------|-------------------|----------------|------------------|
 | **CSV** | **50GB+** | 67% average reduction | 2.1s | Intelligent dtype detection |
+| **Excel (.xlsx/.xls)** | **5GB+** | 60% average reduction | 4.5s | Multi-sheet support, automatic engine selection |
 | **Parquet** | **100GB+** | 45% additional compression | 0.8s | Native columnar optimization |
 | **JSON** | **25GB+** | 80% for nested structures | 3.2s | Automatic flattening |
-| **Excel** | **5GB+** | 60% average reduction | 4.5s | Multi-sheet support |
 | **TSV/Delimited** | **50GB+** | 65% average reduction | 2.3s | Custom delimiter detection |
 | **Apache Arrow** | **200GB+** | 35% additional optimization | 0.5s | Zero-copy operations |
 

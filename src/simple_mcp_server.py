@@ -12,10 +12,43 @@ from typing import Any, Dict
 
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 from mcp.server.stdio import stdio_server
 from mcp.server import Server, InitializationOptions
 from mcp.types import TextContent, Tool
+
+def load_data_file(file_path: str) -> pd.DataFrame:
+    """
+    Smart data loading function that supports multiple file formats.
+    Supports: CSV, Excel (.xlsx, .xls), TSV, JSON, Parquet
+    """
+    file_path = Path(file_path)
+    file_ext = file_path.suffix.lower()
+    
+    try:
+        if file_ext == '.csv':
+            return pd.read_csv(file_path)
+        elif file_ext in ['.xlsx', '.xls']:
+            # Try to read Excel file, handle multiple sheets
+            try:
+                return pd.read_excel(file_path, engine='openpyxl' if file_ext == '.xlsx' else 'xlrd')
+            except ImportError:
+                logger.warning(f"Excel support requires openpyxl/xlrd. Install with: pip install openpyxl xlrd")
+                raise ImportError("Excel support not available. Install with: pip install openpyxl xlrd")
+        elif file_ext == '.tsv':
+            return pd.read_csv(file_path, sep='\t')
+        elif file_ext == '.json':
+            return pd.read_json(file_path)
+        elif file_ext == '.parquet':
+            return pd.read_parquet(file_path)
+        else:
+            # Default to CSV for unknown extensions
+            logger.info(f"Unknown file extension {file_ext}, attempting to read as CSV")
+            return pd.read_csv(file_path)
+    except Exception as e:
+        logger.error(f"Failed to load file {file_path}: {str(e)}")
+        raise
 
 def safe_json_serialize(obj):
     """Safely serialize pandas/numpy objects for JSON"""
@@ -826,7 +859,7 @@ async def handle_dataset_overview(args: Dict[str, Any]) -> Dict[str, Any]:
     
     try:
         import pandas as pd
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Basic overview
         overview = {
@@ -895,7 +928,7 @@ async def handle_numeric_exploration(args: Dict[str, Any]) -> Dict[str, Any]:
     try:
         import pandas as pd
         import numpy as np
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Get numeric columns
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
@@ -1011,7 +1044,7 @@ async def handle_skewness_analysis(args: Dict[str, Any]) -> Dict[str, Any]:
         import pandas as pd
         import numpy as np
         from scipy import stats
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Get numeric columns
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
@@ -1151,7 +1184,7 @@ async def handle_kurtosis_analysis(args: Dict[str, Any]) -> Dict[str, Any]:
     try:
         import pandas as pd
         import numpy as np
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Get numeric columns
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
@@ -1299,7 +1332,7 @@ async def handle_distribution_shape_analysis(args: Dict[str, Any]) -> Dict[str, 
         import pandas as pd
         import numpy as np
         from scipy import stats
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Get numeric columns
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
@@ -1485,7 +1518,7 @@ async def handle_distribution_checks(args: Dict[str, Any]) -> Dict[str, Any]:
     
     try:
         import pandas as pd
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         analysis_results = {}
         
@@ -1620,7 +1653,7 @@ async def handle_correlation_analysis(args: Dict[str, Any]) -> Dict[str, Any]:
     
     try:
         import pandas as pd
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         numeric_cols = data.select_dtypes(include=['number']).columns
         
@@ -1726,7 +1759,7 @@ async def handle_scatter_plots(args: Dict[str, Any]) -> Dict[str, Any]:
     try:
         import pandas as pd
         import numpy as np
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         if x_variable not in data.columns:
             return {"error": f"Column '{x_variable}' not found in dataset"}
@@ -1828,7 +1861,7 @@ async def handle_temporal_analysis(args: Dict[str, Any]) -> Dict[str, Any]:
     
     try:
         import pandas as pd
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         if date_column not in data.columns:
             return {"error": f"Date column '{date_column}' not found in dataset"}
@@ -1977,7 +2010,7 @@ async def handle_optimized_analysis_workflow(args: Dict[str, Any]) -> Dict[str, 
         phase1_start = time.time()
         
         # Load data
-        original_data = pd.read_csv(file_path)
+        original_data = load_data_file(file_path)
         original_memory = original_data.memory_usage(deep=True).sum() / (1024 * 1024)
         
         # Apply memory optimization
@@ -2272,7 +2305,7 @@ async def handle_full_exploration_report(args: Dict[str, Any]) -> Dict[str, Any]
     
     try:
         import pandas as pd
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Run all analyses
         overview = await handle_dataset_overview({"file_path": file_path})
@@ -2381,7 +2414,7 @@ async def handle_discover_data(args: Dict[str, Any]) -> Dict[str, Any]:
     
     try:
         import pandas as pd
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         result = {
             "status": "success",
@@ -2419,7 +2452,7 @@ async def handle_optimize_memory(args: Dict[str, Any]) -> Dict[str, Any]:
     
     try:
         import pandas as pd
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Calculate original memory
         original_memory = data.memory_usage(deep=True).sum() / (1024 * 1024)
@@ -2522,7 +2555,7 @@ async def handle_start_guided_analysis(args: Dict[str, Any]) -> Dict[str, Any]:
         import pandas as pd
         
         # Load data
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Reset session
         analysis_session = {
@@ -2537,7 +2570,7 @@ async def handle_start_guided_analysis(args: Dict[str, Any]) -> Dict[str, Any]:
         }
         
         # Load and OPTIMIZE data first (following your recommended workflow)
-        original_data = pd.read_csv(file_path)
+        original_data = load_data_file(file_path)
         
         # Phase 1: Memory optimization (FIRST)
         optimized_data = original_data.copy()
@@ -2966,7 +2999,7 @@ async def handle_export_optimized_dataset(args: Dict[str, Any]) -> Dict[str, Any
     try:
         # Load and optimize the dataset
         logger.info("🧠 Loading and optimizing dataset for export...")
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Apply memory optimizations
         original_memory = data.memory_usage(deep=True).sum() / 1024**2
@@ -3104,7 +3137,7 @@ async def handle_export_vectorized_dataset(args: Dict[str, Any]) -> Dict[str, An
     try:
         # Load dataset
         logger.info("⚡ Loading dataset for vectorized processing...")
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Apply memory optimizations first
         original_memory = data.memory_usage(deep=True).sum() / 1024**2
@@ -3293,7 +3326,7 @@ async def handle_advanced_feature_engineering(args: Dict[str, Any]) -> Dict[str,
         import time
         
         start_time = time.time()
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         print("🔧 ADVANCED FEATURE ENGINEERING (Vectorized):")
         print()
@@ -3383,7 +3416,7 @@ async def handle_performance_benchmarking(args: Dict[str, Any]) -> Dict[str, Any
         
         # Load and optimize data
         start_time = time.time()
-        original_data = pd.read_csv(file_path)
+        original_data = load_data_file(file_path)
         load_time = time.time() - start_time
         
         original_memory = original_data.memory_usage(deep=True).sum() / (1024 * 1024)
@@ -3487,7 +3520,7 @@ async def handle_ml_readiness_assessment(args: Dict[str, Any]) -> Dict[str, Any]
         import pandas as pd
         import numpy as np
         
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         print("🤖 MACHINE LEARNING READINESS ASSESSMENT:")
         print()
@@ -3632,7 +3665,7 @@ async def handle_executive_dashboard(args: Dict[str, Any]) -> Dict[str, Any]:
         import pandas as pd
         import numpy as np
         
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         print("📊 EXECUTIVE PERFORMANCE DASHBOARD")
         print("=" * 45)
@@ -3786,7 +3819,7 @@ async def handle_create_distribution_plots(args: Dict[str, Any]) -> Dict[str, An
         import time
         
         start_time = time.time()
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Get numeric columns
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
@@ -3886,7 +3919,7 @@ async def handle_create_correlation_heatmap(args: Dict[str, Any]) -> Dict[str, A
         import time
         
         start_time = time.time()
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
         
@@ -3974,7 +4007,7 @@ async def handle_create_time_series_plots(args: Dict[str, Any]) -> Dict[str, Any
         import time
         
         start_time = time.time()
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Try to find date column if not specified
         if not date_column:
@@ -4084,7 +4117,7 @@ async def handle_create_outlier_visualizations(args: Dict[str, Any]) -> Dict[str
         import time
         
         start_time = time.time()
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
         if columns:
@@ -4221,7 +4254,7 @@ async def handle_create_business_intelligence_dashboard(args: Dict[str, Any]) ->
         import time
         
         start_time = time.time()
-        data = pd.read_csv(file_path)
+        data = load_data_file(file_path)
         
         # Analyze dataset for BI insights
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
