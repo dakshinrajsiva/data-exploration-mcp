@@ -128,3 +128,8 @@ demo_*.py
 *_fixed.*
 *.sh
 !setup.sh
+
+# Interview and presentation materials (keep private)
+INTERVIEW_ARCHITECTURE_PRESENTATION.md
+INTERVIEW_QUICK_REFERENCE.md
+INTERVIEW_SUCCESS_GUIDE.md
